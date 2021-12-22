@@ -1,0 +1,45 @@
+// these double forward slashes tell lxml that we want to search for all
+tags in the HTML document which match our requirements/filters. Another
+option was to use / (a single forward slash). The single forward slash returns
+only the immediate child tags/nodes which match our requirements/filters.
+
+• div tells lxml that we are searching for div tags in the HTML page
+• [@id="tab_newreleases_content"] tells lxml that we are only interested
+in those divs which have an id of tab_newreleases_content
+
+
+
+. tells lxml that we are only interested in the tags which are the children of
+the new_releases tag.
+/text() tells lxml that we want the text contained within the tag we just
+extracted. In this case, it returns the title contained in the div with the
+tab_item_name class name
+
+
+First of all, we will extract the divs with the tab_item_details class, then
+we will extract the spans containing the platform_img class and finally we will
+extract the second class name from those spans.
+
+Here we have [contains(@class,
+"platform_img")] instead of simply having [@class="platform_img"]. The reason is that [@class="platform_img"] returns those spans which only have the
+platform_img class associated with them. If the spans have an additional class,
+they won’t be returned. Whereas [contains(@class, "platform_img")] filters
+all the spans which have the platform_img class.
+
+
+The
+.get() method allows us to extract an attribute of a tag. Here we are using it.to extract the class attribute of a span. We get a string back from the .get()
+method. In the case of the first game, the string being returned is platform_img
+win so we split that string based on the comma and the whitespace, and then we
+store the last part (which is the actual platform name) of the split string in the
+list.
+
+we are removing the hmd_separator from the list if it exists. This is
+because hmd_separator is not a platform. It is just a vertical separator bar used
+to separate actual platforms from VR/AR hardware.
+
+Now we just need this to return a JSON response so that we can easily turn this
+into a web-based API or use it in some other project.We are using the zip function to iterate over all of
+those lists in parallel. Then we create a dictionary for each game and assign the
+title, price, tags, and platforms as a separate key in that dictionary. Lastly, we
+append that dictionary to the output list
